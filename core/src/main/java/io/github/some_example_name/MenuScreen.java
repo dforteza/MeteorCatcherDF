@@ -39,9 +39,9 @@ public class MenuScreen implements Screen {
 
     @Override
     public void show() {
-        bgTexture   = new Texture("background.png");
-        logoTexture = new Texture("libgdx.png");
-        dropTexture = new Texture("drop.png");
+        bgTexture   = PixmapFactory.createBackground(SCREEN_W, SCREEN_H);
+        logoTexture = PixmapFactory.createLogo(96);
+        dropTexture = PixmapFactory.createDrop(32);
 
         titleFont = new BitmapFont();
         titleFont.getData().setScale(2.5f);
@@ -101,38 +101,38 @@ public class MenuScreen implements Screen {
 
         // Título
         titleFont.setColor(Color.CYAN);
-        titleFont.draw(game.batch, "RAIN DROP CATCHER", 70, SCREEN_H - 120);
+        titleFont.draw(game.batch, "METEOR CATCHER", 140, SCREEN_H - 120);
 
         // ── Cómo jugar ─────────────────────────────────────────────────────────
         bodyFont.setColor(Color.WHITE);
-        bodyFont.draw(game.batch, "COMO JUGAR:",                                60, 300);
-        bodyFont.draw(game.batch, "  <- ->  /  A D     mover el cubo",          60, 278);
-        bodyFont.draw(game.batch, "  Clic / Toque      seguir el raton/dedo",   60, 257);
-        bodyFont.draw(game.batch, "  Atrapa gotas para sumar puntos",            60, 236);
-        bodyFont.draw(game.batch, "  Perder 3 gotas = GAME OVER",                60, 215);
-        bodyFont.draw(game.batch, "  Cada 10 puntos el nivel sube de velocidad", 60, 194);
+        bodyFont.draw(game.batch, "COMO JUGAR:",                                      60, 300);
+        bodyFont.draw(game.batch, "  <- ->  /  A D     mover la nave",                60, 278);
+        bodyFont.draw(game.batch, "  Clic / Toque      seguir el raton/dedo",         60, 257);
+        bodyFont.draw(game.batch, "  Atrapa meteoritos para sumar puntos",             60, 236);
+        bodyFont.draw(game.batch, "  Perder 3 meteoritos = GAME OVER",                 60, 215);
+        bodyFont.draw(game.batch, "  Cada 10 puntos el nivel sube de velocidad",       60, 194);
 
-        // ── Tipos de gota ──────────────────────────────────────────────────────
+        // ── Tipos de meteorito ─────────────────────────────────────────────────
         bodyFont.setColor(Color.WHITE);
-        bodyFont.draw(game.batch, "TIPOS DE GOTA:", 60, 168);
+        bodyFont.draw(game.batch, "TIPOS DE METEORITO:", 60, 168);
 
-        // Gota normal: icono + texto
+        // Normal
         game.batch.setColor(Color.WHITE);
         game.batch.draw(dropTexture, 60, 110, 20, 20);
         bodyFont.setColor(Color.WHITE);
-        bodyFont.draw(game.batch, "Blanca   - Normal  (+1 pto)",  86, 130);
+        bodyFont.draw(game.batch, "Blanco  - Normal  (+1 pto)",              86, 130);
 
-        // Gota rápida
+        // Rápido
         game.batch.setColor(Color.RED);
         game.batch.draw(dropTexture, 60, 90, 20, 20);
         bodyFont.setColor(Color.RED);
-        bodyFont.draw(game.batch, "Roja  - Rapida  (+2 ptos, mas velocidad)", 86, 110);
+        bodyFont.draw(game.batch, "Rojo    - Rapido  (+2 ptos, mas velocidad)", 86, 110);
 
-        // Gota bonus
+        // Bonus
         game.batch.setColor(Color.GOLD);
         game.batch.draw(dropTexture, 60, 70, 20, 20);
         bodyFont.setColor(Color.GOLD);
-        bodyFont.draw(game.batch, "Dorada   - Bonus   (+5 ptos, cae lento)",    86, 90);
+        bodyFont.draw(game.batch, "Dorado  - Bonus   (+5 ptos, cae lento)",    86, 90);
 
         // Restaurar color del batch
         game.batch.setColor(Color.WHITE);

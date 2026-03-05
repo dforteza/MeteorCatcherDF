@@ -134,9 +134,9 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        bgTexture     = new Texture("background.png");
-        bucketTexture = new Texture("bucket.png");
-        dropTexture   = new Texture("drop.png");
+        bgTexture     = PixmapFactory.createBackground(SCREEN_W, SCREEN_H);
+        bucketTexture = PixmapFactory.createShip(BUCKET_W, BUCKET_H);
+        dropTexture   = PixmapFactory.createDrop(DROP_W);
 
         dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.mp3"));
         bgMusic   = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
