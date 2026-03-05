@@ -1,12 +1,5 @@
-<<<<<<< HEAD
+
 # Meteor Catcher
-=======
-# My Drop Game
->>>>>>> 14aa9d098660aabfccaad8465ce440722e0fb774
-
-Un videojuego 2D desarrollado con [libGDX](https://libgdx.com/) (versión 1.14.0) para escritorio (LWJGL3).
-
----
 
 ## Introducción
 
