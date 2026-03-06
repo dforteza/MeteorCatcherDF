@@ -5,26 +5,11 @@ import com.badlogic.gdx.graphics.Texture;
 
 import java.util.Random;
 
-/**
- * Genera todas las texturas del juego de forma procedural mediante {@link Pixmap}.
- *
- * Cada método crea un Pixmap, lo convierte en Texture y lo destruye inmediatamente
- * para no retener memoria nativa innecesaria. El llamador es responsable de
- * invocar {@link Texture#dispose()} cuando ya no necesite la textura.
- */
+// Genera todas las texturas del juego de forma procedural con Pixmap.
 public final class PixmapFactory {
 
     private PixmapFactory() {}
 
-    // ==========================================================================
-    // Fondo
-    // ==========================================================================
-
-    /**
-     * Fondo de espacio profundo: gradiente azul-oscuro con 300 estrellas aleatorias.
-     * La semilla de aleatoriedad es fija para que el patrón de estrellas sea siempre
-     * el mismo entre partidas.
-     */
     public static Texture createBackground(int w, int h) {
         Pixmap pm = new Pixmap(w, h, Pixmap.Format.RGBA8888);
 
@@ -55,16 +40,6 @@ public final class PixmapFactory {
         return tex;
     }
 
-    // ==========================================================================
-    // Nave del jugador
-    // ==========================================================================
-
-    /**
-     * Nave espacial tipo OVNI: cuerpo elíptico cian, cúpula translúcida en la mitad
-     * superior y tres luces amarillas alineadas sobre el cuerpo.
-     * Las elipses se generan con scanlines propias porque libGDX 1.14 no
-     * expone fillEllipse/drawEllipse en su Pixmap moderno.
-     */
     public static Texture createShip(int w, int h) {
         Pixmap pm = new Pixmap(w, h, Pixmap.Format.RGBA8888);
         pm.setColor(0, 0, 0, 0);
@@ -99,17 +74,7 @@ public final class PixmapFactory {
         return tex;
     }
 
-    /**
-     * Rellena una elipse axis-aligned trazando líneas horizontales (scanlines).
-     * Compatible con todas las versiones de libGDX que ofrecen
-     * {@link Pixmap#drawLine(int, int, int, int)}.
-     *
-     * @param pm el Pixmap sobre el que se dibuja (con el color ya configurado).
-     * @param cx centro X de la elipse.
-     * @param cy centro Y de la elipse.
-     * @param rx radio horizontal (semiancho).
-     * @param ry radio vertical (semialto).
-     */
+    // Rellena una elipse con scanlines horizontales (libGDX no expone fillEllipse).
     private static void fillEllipseScanline(Pixmap pm, int cx, int cy, int rx, int ry) {
         if (rx <= 0 || ry <= 0) return;
         for (int dy = -ry; dy <= ry; dy++) {
@@ -119,16 +84,6 @@ public final class PixmapFactory {
         }
     }
 
-    // ==========================================================================
-    // Meteorito (gota)
-    // ==========================================================================
-
-    /**
-     * Círculo blanco puro.
-     * Al teñirse con {@link com.badlogic.gdx.graphics.g2d.SpriteBatch#setColor},
-     * adquiere exactamente el color del tipo de meteorito correspondiente
-     * (blanco para NORMAL, rojo para FAST, dorado para BONUS).
-     */
     public static Texture createDrop(int size) {
         Pixmap pm = new Pixmap(size, size, Pixmap.Format.RGBA8888);
         pm.setColor(0, 0, 0, 0);
@@ -140,13 +95,6 @@ public final class PixmapFactory {
         return tex;
     }
 
-    // ==========================================================================
-    // Logo del menú
-    // ==========================================================================
-
-    /**
-     * Orbe luminoso cian con brillo blanco descentrado: icono decorativo del menú.
-     */
     public static Texture createLogo(int size) {
         Pixmap pm = new Pixmap(size, size, Pixmap.Format.RGBA8888);
         pm.setColor(0, 0, 0, 0);

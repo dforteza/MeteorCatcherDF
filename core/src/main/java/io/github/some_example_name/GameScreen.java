@@ -15,39 +15,16 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-/**
- * Pantalla de juego principal.
- *
- * Mecánica:
- *  - Mueve el cubo (← → / A D / ratón) para atrapar las gotas que caen.
- *  - Cada tipo de gota cae a distinta velocidad y otorga distintos puntos.
- *  - Cada 10 puntos sube el nivel: mayor velocidad base e intervalo de spawn
- *    más corto, lo que aumenta la dificultad progresivamente.
- *  - Dejar escapar una gota resta 1 vida; al llegar a 0 es GAME OVER.
- *  - En GAME OVER: [R] reinicia, [M] vuelve al menú.
- */
 public class GameScreen implements Screen {
 
-    // ── Tipos de gota ─────────────────────────────────────────────────────────
-
-    /**
-     * Define los tres tipos de gota disponibles.
-     * Cada tipo tiene un multiplicador de velocidad, puntos al atraparla
-     * y un color de tinte para el sprite.
-     */
+    // velocidad, puntos y color de cada tipo de meteorito
     private enum DropType {
-        /** Gota normal: velocidad base, vale 1 punto. Probabilidad 70 %. */
-        NORMAL(1.0f, 1, Color.WHITE),
-        /** Gota rápida: cae más deprisa, vale 2 puntos. Probabilidad 20 %. */
-        FAST  (1.8f, 2, Color.RED),
-        /** Gota bonus: cae despacio pero vale 5 puntos. Probabilidad 10 %. */
-        BONUS (0.6f, 5, Color.GOLD);
+        NORMAL(1.0f, 1, Color.WHITE),   // 70% - normal, 1 punto
+        FAST  (1.8f, 2, Color.RED),     // 20% - rápido, 2 puntos
+        BONUS (0.6f, 5, Color.GOLD);    // 10% - lento, 5 puntos
 
-        /** Multiplicador aplicado sobre la velocidad base actual. */
         final float speedMult;
-        /** Puntos otorgados al atrapar esta gota. */
         final int   points;
-        /** Color de tinte del sprite. */
         final Color color;
 
         DropType(float speedMult, int points, Color color) {
@@ -57,9 +34,6 @@ public class GameScreen implements Screen {
         }
     }
 
-    // ── Clase interna Drop ────────────────────────────────────────────────────
-
-    /** Representa una gota activa en pantalla: posición (AABB) + tipo. */
     private static class Drop {
         final Rectangle rect;
         final DropType  type;
@@ -69,8 +43,6 @@ public class GameScreen implements Screen {
             this.type = type;
         }
     }
-
-    // ── Constantes ────────────────────────────────────────────────────────────
 
     private static final int   SCREEN_W               = 640;
     private static final int   SCREEN_H               = 480;
@@ -89,11 +61,7 @@ public class GameScreen implements Screen {
     private static final float MIN_SPAWN_INTERVAL     = 0.35f;
     private static final int   POINTS_PER_LEVEL       = 10;
 
-    // ── Referencia al juego ───────────────────────────────────────────────────
-
     private final Main game;
-
-    // ── Assets ────────────────────────────────────────────────────────────────
 
     private Texture    bgTexture;
     private Texture    bucketTexture;
@@ -102,12 +70,7 @@ public class GameScreen implements Screen {
     private Music      bgMusic;
     private BitmapFont font;
 
-    // ── Cámara ────────────────────────────────────────────────────────────────
-
-    /** Cámara ortogonal: 1 unidad = 1 píxel, origen abajo-izquierda. */
     private OrthographicCamera camera;
-
-    // ── Estado del juego ──────────────────────────────────────────────────────
 
     private Rectangle  bucket;
     private Array<Drop> drops;
@@ -119,18 +82,11 @@ public class GameScreen implements Screen {
     private float currentSpawnInterval;
     private boolean gameOver;
 
-    // Vector auxiliar reutilizable (evita allocations en render)
     private final Vector3 touchPos = new Vector3();
-
-    // ── Constructor ───────────────────────────────────────────────────────────
 
     public GameScreen(Main game) {
         this.game = game;
     }
-
-    // ==========================================================================
-    // Ciclo de vida de Screen
-    // ==========================================================================
 
     @Override
     public void show() {
@@ -195,11 +151,6 @@ public class GameScreen implements Screen {
         font.dispose();
     }
 
-    // ==========================================================================
-    // Dibujo
-    // ==========================================================================
-
-    /** Dibuja el fondo, el cubo y todas las gotas con su color de tinte. */
     private void drawWorld() {
         game.batch.draw(bgTexture, 0, 0, SCREEN_W, SCREEN_H);
         game.batch.draw(bucketTexture, bucket.x, bucket.y, BUCKET_W, BUCKET_H);
@@ -212,7 +163,6 @@ public class GameScreen implements Screen {
         game.batch.setColor(Color.WHITE);
     }
 
-    /** Dibuja el HUD (puntuación, vidas, nivel) y el overlay de Game Over. */
     private void drawHUD() {
         font.setColor(Color.WHITE);
         font.draw(game.batch, "Score: " + score, 10, SCREEN_H - 10);
@@ -233,14 +183,6 @@ public class GameScreen implements Screen {
         }
     }
 
-    // ==========================================================================
-    // Input
-    // ==========================================================================
-
-    /**
-     * Mueve el cubo con teclado (← →, A D) o siguiendo la posición horizontal
-     * del ratón/toque. Usa delta time para independencia del hardware.
-     */
     private void handleInput(float delta) {
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)  || Gdx.input.isKeyPressed(Input.Keys.A)) {
             bucket.x -= BUCKET_SPEED * delta;
@@ -258,7 +200,6 @@ public class GameScreen implements Screen {
         bucket.x = MathUtils.clamp(bucket.x, 0, SCREEN_W - BUCKET_W);
     }
 
-    /** Tras Game Over: [R] reinicia la partida, [M] vuelve al menú. */
     private void handleGameOverInput() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
             resetGame();
@@ -268,11 +209,6 @@ public class GameScreen implements Screen {
         }
     }
 
-    // ==========================================================================
-    // Lógica del juego
-    // ==========================================================================
-
-    /** Deja todas las variables en el estado inicial de partida. */
     private void resetGame() {
         drops                = new Array<>();
         spawnTimer           = 0f;
@@ -285,10 +221,6 @@ public class GameScreen implements Screen {
         bucket = new Rectangle(SCREEN_W / 2f - BUCKET_W / 2f, 20f, BUCKET_W, BUCKET_H);
     }
 
-    /**
-     * Recalcula velocidad base e intervalo de spawn según la puntuación actual.
-     * Se llama cada vez que el jugador atrapa una gota.
-     */
     private void updateDifficulty() {
         int newLevel = score / POINTS_PER_LEVEL + 1;
         if (newLevel > level) {
@@ -301,10 +233,6 @@ public class GameScreen implements Screen {
         }
     }
 
-    /**
-     * Elige un tipo de gota aleatoriamente:
-     *   70 % NORMAL  ·  20 % FAST  ·  10 % BONUS
-     */
     private DropType randomDropType() {
         float r = MathUtils.random();
         if (r < 0.10f) return DropType.BONUS;
@@ -312,7 +240,6 @@ public class GameScreen implements Screen {
         return DropType.NORMAL;
     }
 
-    /** Genera una nueva gota en X aleatoria cada {@code currentSpawnInterval} segundos. */
     private void spawnDrops(float delta) {
         spawnTimer += delta;
         if (spawnTimer >= currentSpawnInterval) {
@@ -322,29 +249,20 @@ public class GameScreen implements Screen {
         }
     }
 
-    /**
-     * Mueve cada gota hacia abajo (delta time × velocidad base × multiplicador de tipo).
-     * Detecta colisión AABB con el cubo y salida por la parte inferior.
-     */
     private void updateDrops(float delta) {
         for (int i = drops.size - 1; i >= 0; i--) {
             Drop drop = drops.get(i);
-            // Movimiento independiente del hardware gracias al delta time
             drop.rect.y -= currentDropSpeed * drop.type.speedMult * delta;
 
             if (drop.rect.overlaps(bucket)) {
-                // Gota atrapada: puntúa y ajusta dificultad
                 dropSound.play();
                 score += drop.type.points;
                 drops.removeIndex(i);
                 updateDifficulty();
             } else if (drop.rect.y + DROP_H < 0) {
-                // Gota perdida
                 lives--;
                 drops.removeIndex(i);
-                if (lives <= 0) {
-                    gameOver = true;
-                }
+                if (lives <= 0) gameOver = true;
             }
         }
     }

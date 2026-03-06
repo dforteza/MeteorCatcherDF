@@ -9,12 +9,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-/**
- * Pantalla de menú principal.
- *
- * Muestra el título del juego, las instrucciones de control y los distintos
- * tipos de gota. Pulse ESPACIO o haga clic/toque para empezar a jugar.
- */
 public class MenuScreen implements Screen {
 
     private static final int SCREEN_W = 640;
@@ -32,10 +26,6 @@ public class MenuScreen implements Screen {
     public MenuScreen(Main game) {
         this.game = game;
     }
-
-    // ==========================================================================
-    // Ciclo de vida de Screen
-    // ==========================================================================
 
     @Override
     public void show() {
@@ -87,10 +77,6 @@ public class MenuScreen implements Screen {
         titleFont.dispose();
         bodyFont.dispose();
     }
-
-    // ==========================================================================
-    // Dibujo
-    // ==========================================================================
 
     private void drawMenu() {
         // Fondo
